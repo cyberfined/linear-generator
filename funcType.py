@@ -63,6 +63,7 @@ particularFuncs = {
         "scale": lambda: copyC("scale"),
         "mat44rotate": lambda: copyC("mat44rotate"),
         "mat44perspective": lambda: copyC("mat44perspective"),
+        "lcons": lambda: copyC("lcons"),
         "add": lambda: copyC("add"),
         "sub": lambda: copyC("sub"),
         "smult": lambda: copyC("smult"),

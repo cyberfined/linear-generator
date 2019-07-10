@@ -13,8 +13,14 @@ def funcProto(vec, scalar, name, **kwargs):
             "rscalar": scalarType(scalar)
     }
     for k,v in kwargs.items(): data[k] = v
-    proto = pf[:pf.find(")") + 1] + ";"
-    return proto.format(**data)
+    pos = pf.find(")") + 1
+    if pos > 0: 
+        proto = pf[:pos] + ";"
+        proto = proto.format(**data)
+    else:
+        proto = pf.format(**data)
+        proto = proto[:proto.find(")") + 1] + ";"
+    return proto
 
 def funcBody(vec, scalar, name, size, **kwargs):
     data = {
@@ -92,6 +98,8 @@ mat44perspective = """\
         {{0, 0, 2*far*near/(near-far), 0}}
     }};
 }}"""
+
+lcons = "{lcons}"
 
 add = """\
 {type} {func}({type} a, {type} b) {{
@@ -172,6 +180,7 @@ funcs = {
         "scale": scale,
         "mat44rotate": mat44rotate,
         "mat44perspective": mat44perspective,
+        "lcons": lcons,
         "add": add,
         "sub": sub,
         "smult": smult,

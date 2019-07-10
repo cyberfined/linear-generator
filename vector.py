@@ -23,6 +23,7 @@ class Vector:
 
         for f in funcs:
             f.args["lvec"] = self.getLowVectorType()
+            f.args["lcons"] = self.getLowConstructor()
 
         funcs.insert(0, self.getConstructor())
 
@@ -46,6 +47,12 @@ class Vector:
         proto = "{0} {1}({2})".format(t, name, defvar)
         body = "{0} {{ return ({1}) {{ {2} }}; }}".format(proto, t, var);
         return funcType.ParticularFunc.manualCreate(name, proto+";", body)
+
+    def getLowConstructor(self):
+        t = self.getType()
+        name = t[0].upper() + t[1:] + str(self.num-1)
+        var = ", ".join(["v." + c for c in compontents[:self.num-1]])
+        return "{0} {1}({2} v, {3} s) {{ return ({0}){{ {4}, s }}; }}".format(t, name, self.getLowVectorType(), self.scalar, var)
 
     def getDefinition(self):
         template = "typedef struct {{ {0} {1}; }} {2};"
