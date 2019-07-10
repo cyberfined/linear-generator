@@ -70,12 +70,13 @@ def genLinearLib(libname, vecs):
         cd.write(ccont)
 
 if __name__ == "__main__":
-    v4f = vector.Vector(4, "float", funcType.funcList("add", "sub", "smult"))
-    mat44f = matrix.Matrix(4, 4, "float", funcType.funcList(
+    v3f = vector.vec3f()
+    v4f = vector.vec4f(funcType.funcList("lcons", "add", "sub", "smult"))
+    mat44f = matrix.mat44f(funcType.funcList(
         "zero",
         "identity",
         ["mmult", "mat44f_mult", "mat44f", 4, 4],
         ["mmult", "mat44fv4_mult", "vec4f", 4, 1],
         "mat44perspective"
     ))
-    genLinearLib("linear", [v4f, mat44f])
+    genLinearLib("linear", [v3f, v4f, mat44f])

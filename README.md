@@ -31,6 +31,7 @@ mmult | vec mmult(mat m, vec v) | multiply vector by matrix or matrix by matrix
 translate | mat translate(vec v) |  create translation matrix
 mat44rotate | mat44 mat44_rotate(vec axis, float a) | create 4x4 rotation matrix
 mat44perspective | mat44 mat44_perspective(scalar a, scalar ratio, scalar n, scalar f) | create 4x4 perspective projection matrix
+lcons | vec lcons(vec v, scalar s) | create vector from one less dimension vector and scalar
 add | vec add(vec a, vec b) | return sum of two vectors or matrices
 sub | vec sub(vec a, vec b) | return difference between two vectors or matrices
 smult | vec smult(vec v, scalar s) | return vector or matrix multiplied by scalar
@@ -49,19 +50,20 @@ where:
 * scalar is int, float or double
 
 ## Example
-Let's generate 4d vector with add, sub and smult functions and 4x4 matrix with zero, identity, mmult and perspective functions.
+Let's generate 3d vector, 4d vector with constructor from 3d vector, add, sub and smult functions and 4x4 matrix with zero, identity, mmult and perspective functions.
 
 ```python
 if __name__ == "__main__":
-    vec4f = vector.Vector(4, "float", funcType.funcList("add", "sub", "smult"))
-    mat44f = matrix.Matrix(4, 4, "float", funcType.funcList(
+    v3f = vector.vec3f()
+    v4f = vector.vec4f(funcType.funcList("lcons", "add", "sub", "smult"))
+    mat44f = matrix.mat44f(funcType.funcList(
         "zero",
         "identity",
         ["mmult", "mat44f_mult", "mat44f", 4, 4],
         ["mmult", "mat44fv4_mult", "vec4f", 4, 1],
         "mat44perspective"
     ))
-    genLinearLib("linear", [vec4f, mat44f])
+    genLinearLib("linear", [v3f, v4f, mat44f])
 ```
 
 Consider in more details mmult. If you give list instead of string, first value of it must be the name of function, another values are parameters for generator. In our case second value is a name of generated function, third value is a return type, fourth and fifth values are rows and columns of resulted essence. In result next files will be generated:
@@ -70,10 +72,14 @@ Consider in more details mmult. If you give list instead of string, first value 
 ```c
 #pragma once
 
+typedef struct { float x,y,z; } vec3f;
 typedef struct { float x,y,z,w; } vec4f;
 typedef struct { vec4f X,Y,Z,W; } mat44f;
 
+vec3f Vec3f(float x, float y, float z);
+
 vec4f Vec4f(float x, float y, float z, float w);
+vec4f Vec4f3(vec3f v, float s);
 vec4f vec4f_add(vec4f a, vec4f b);
 vec4f vec4f_sub(vec4f a, vec4f b);
 vec4f vec4f_smult(vec4f v, float k);
@@ -120,7 +126,11 @@ static void generic_float_mmult(float *a, float *b, float *out, size_t r1, size_
                 out[i*c2 + j] += a[i*c1 + k] * b[k*c2 + j];
 }
 
+vec3f Vec3f(float x, float y, float z) { return (vec3f) { x, y, z }; }
+
 vec4f Vec4f(float x, float y, float z, float w) { return (vec4f) { x, y, z, w }; }
+
+vec4f Vec4f3(vec3f v, float s) { return (vec4f){ v.x, v.y, v.z, s }; }
 
 vec4f vec4f_add(vec4f a, vec4f b) {
     vec4f out;
