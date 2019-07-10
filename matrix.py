@@ -2,6 +2,14 @@ import funcType
 import vector
 from utils import typeLetter
 
+def mat33i(funcs=[]): return Matrix(3, 3, "int", funcs)
+def mat33f(funcs=[]): return Matrix(3, 3, "float", funcs)
+def mat33d(funcs=[]): return Matrix(3, 3, "double", funcs)
+
+def mat44i(funcs=[]): return Matrix(4, 4, "int", funcs)
+def mat44f(funcs=[]): return Matrix(4, 4, "float", funcs)
+def mat44d(funcs=[]): return Matrix(4, 4, "double", funcs)
+
 compontents = ["X", "Y", "Z", "W"]
 
 class Matrix:
